@@ -117,3 +117,14 @@ let heroes = [
 heroes.map(function (hero) {
   return hero.name;
 }); // ['Tony', 'Captain']
+
+//////////////////////////////////////////////////
+
+var div = document.querySelector('div'); // var div: HTMLDivElement | null
+// div.innerHTML // div가 null일 수도 있기 때문에 에러 발생
+if (div) { // null 체크를 하기 때문에 정상 동작
+  div.innerHTML
+}
+
+var div2 = document.querySelector('div') as HTMLDivElement; // 타입 단언
+div2.innerHTML; // 타입 단언을 했기 때문에 오류 안남
