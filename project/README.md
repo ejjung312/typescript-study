@@ -11,7 +11,8 @@
     - [x] 타입스크립트 설정파일 설정(tsconfig.json) 및 기본 값 추가
     - [x] 자바스크립트 파일을 타입스크립트 파일로 변환
     - [x] tsc 명령어로 타입스크립트 컴파일
-
+2. 명시적인 any 선언하기
+    - tsconfig.json 파일에 noImplicitAny: true로 추가
 
 
 ## 참고 자료
