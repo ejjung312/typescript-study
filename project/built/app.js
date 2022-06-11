@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -34,6 +35,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+Object.defineProperty(exports, "__esModule", { value: true });
+var axios_1 = require("axios");
+var chart_js_1 = require("chart.js");
 // utils
 function $(selector) {
     return document.querySelector(selector);
@@ -68,12 +72,18 @@ var isRecoveredLoading = false;
 // api
 function fetchCovidSummary() {
     var url = 'https://api.covid19api.com/summary';
-    return axios.get(url);
+    return axios_1.default.get(url);
 }
+var CovidStatus;
+(function (CovidStatus) {
+    CovidStatus["Confirmed"] = "confirmed";
+    CovidStatus["Recovered"] = "recovered";
+    CovidStatus["Deaths"] = "deaths";
+})(CovidStatus || (CovidStatus = {}));
 function fetchCountryInfo(countryCode, status) {
-    // params: confirmed, recovered, deaths
+    // status params: confirmed, recovered, deaths
     var url = "https://api.covid19api.com/country/".concat(countryCode, "/status/").concat(status);
-    return axios.get(url);
+    return axios_1.default.get(url);
 }
 // methods
 function startApp() {
@@ -104,13 +114,13 @@ function handleListClick(event) {
                     clearRecoveredList();
                     startLoadingAnimation();
                     isDeathLoading = true;
-                    return [4 /*yield*/, fetchCountryInfo(selectedId, 'deaths')];
+                    return [4 /*yield*/, fetchCountryInfo(selectedId, CovidStatus.Deaths)];
                 case 1:
                     deathResponse = (_a.sent()).data;
-                    return [4 /*yield*/, fetchCountryInfo(selectedId, 'recovered')];
+                    return [4 /*yield*/, fetchCountryInfo(selectedId, CovidStatus.Recovered)];
                 case 2:
                     recoveredResponse = (_a.sent()).data;
-                    return [4 /*yield*/, fetchCountryInfo(selectedId, 'confirmed')];
+                    return [4 /*yield*/, fetchCountryInfo(selectedId, CovidStatus.Confirmed)];
                 case 3:
                     confirmedResponse = (_a.sent()).data;
                     endLoadingAnimation();
@@ -195,11 +205,11 @@ function setupData() {
 }
 function renderChart(data, labels) {
     var ctx = $('#lineChart').getContext('2d');
-    //   Chart.defaults.color = '#f5eaea';
-    //   Chart.defaults.font.family = 'Exo 2';
-    Chart.defaults.global.defaultFontColor = "#f5eaea";
-    Chart.defaults.global.defaultFontFamily = "Exo 2";
-    new Chart(ctx, {
+    chart_js_1.Chart.defaults.color = '#f5eaea';
+    chart_js_1.Chart.defaults.font.family = 'Exo 2';
+    // Chart.defaults.global.defaultFontColor = '#f5eaea';
+    // Chart.defaults.global.defaultFontFamily = 'Exo 2';
+    new chart_js_1.Chart(ctx, {
         type: 'line',
         data: {
             labels: labels,
@@ -219,7 +229,9 @@ function setChartData(data) {
     var chartData = data.slice(-14).map(function (value) { return value.Cases; });
     var chartLabel = data
         .slice(-14)
-        .map(function (value) { return new Date(value.Date).toLocaleDateString().slice(5, -1); });
+        .map(function (value) {
+        return new Date(value.Date).toLocaleDateString().slice(5, -1);
+    });
     renderChart(chartData, chartLabel);
 }
 function setTotalConfirmedNumber(data) {
